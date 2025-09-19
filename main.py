@@ -11,6 +11,8 @@ from lora import transcribe_audio_files
 from torch.utils.data import Dataset
 from bitsandbytes.optim import PagedAdamW8bit
 
+from torch.utils.tensorboard import SummaryWriter
+
 
 # Setup logging
 logging.basicConfig(
@@ -148,6 +150,8 @@ def main():
         processor=processor,
     )
 
+    writer = SummaryWriter('runs/sesame_explorer')
+
     logger.info(f"Dataset created with {len(dataset)} samples")
     wandb.init(
         project="sesame-explorer",
@@ -158,6 +162,9 @@ def main():
         },
         reinit=True,
     )
+
+    writer.add_graph(model, dataset[0])
+    writer.close()
 
 
 
